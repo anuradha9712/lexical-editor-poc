@@ -92,7 +92,7 @@ export default function Editor() {
             <ToolbarPlugin />
             <div className="editor-inner" id="main-container">
               <RichTextPlugin
-                contentEditable={<ContentEditable className="editor-input" />}
+                contentEditable={<ContentEditable className="editor-input ContentEditable__root" />}
                 placeholder={<Placeholder />}
                 ErrorBoundary={LexicalErrorBoundary}
               />
