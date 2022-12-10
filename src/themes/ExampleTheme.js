@@ -32,6 +32,7 @@ const exampleTheme = {
     code: "editor-text-code"
   },
   code: "editor-code",
+  namespace: "editor-tokenVariable",
   codeHighlight: {
     atrule: "editor-tokenAttr",
     attr: "editor-tokenAttr",
