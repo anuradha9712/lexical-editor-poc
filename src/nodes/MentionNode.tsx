@@ -1,3 +1,4 @@
+import { Chip } from "@innovaccer/design-system";
 import type { Spread } from "lexical";
 
 import {
@@ -10,12 +11,14 @@ import {
   SerializedTextNode,
   TextNode
 } from "lexical";
+import { renderToStaticMarkup } from "react-dom/server";
 
 export type SerializedMentionNode = Spread<
   {
     mentionName: string;
     type: "mention";
     version: 1;
+    // customHTML: any;
   },
   SerializedTextNode
 >;
@@ -61,20 +64,38 @@ export class MentionNode extends TextNode {
     this.__mention = mentionName;
   }
 
+  // const removeMutationListener = editor.registerMutationListener(
+  //   MyCustomNode,
+  //   (mutatedNodes) => {
+  //     // mutatedNodes is a Map where each key is the NodeKey, and the value is the state of mutation.
+  //     for (let [nodeKey, mutation] of mutatedNodes) {
+  //       console.log(nodeKey, mutation)
+  //     }
+  //   },
+  // );
+  
+  // Do not forget to unregister the listener when no longer needed!
+  //removeMutationListener();
+
   exportJSON(): SerializedMentionNode {
     return {
       ...super.exportJSON(),
       mentionName: this.__mention,
       type: "mention",
-      version: 1
+      version: 1,
+      // customHTML: `<p class="editor-paragraph"><p class="editor-paragraph"><span data-lexical-mention="true"><div tabindex="0" data-test="DesignSystem-Chip--GenericChip" class="Chip-wrapper Chip Chip--selection"><i class="material-icons material-icons-round Icon Icon--inverse Chip-icon Chip-icon--left" data-test="DesignSystem-GenericChip--Icon" style="font-size:16px;width:16px" role="button">assessment_round</i><span data-test="DesignSystem-GenericChip--Text" class="Text Text--regular color-inverse">Admiral Dodd Rancit</span><i class="material-icons material-icons-round Icon Icon--subtle Chip-icon Chip-icon--right cursor-pointer" data-test="DesignSystem-GenericChip--clearButton" style="font-size:16px;width:16px" role="button" tabindex="0">clear_round</i></div></span></p></p>`
+
     };
   }
 
   createDOM(config: EditorConfig): HTMLElement {
+    const chip = <Chip label={this.__mention} name={this.__mention} type="selection" />;
+    const myHtmlCode = renderToStaticMarkup(chip);
+
     const dom = super.createDOM(config);
-    dom.style.cssText = mentionStyle;
-    dom.className = "mention";
-    // dom.innerHTML = `<h2>hello world</h2>`
+    dom.innerHTML = myHtmlCode;
+    // dom.style.cssText = mentionStyle;
+    // dom.className = "mention";
     return dom;
   }
 

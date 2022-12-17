@@ -37,9 +37,37 @@ import "@innovaccer/design-system/css";
 import { ImageNode } from "./nodes/ImageNode";
 import { Card } from "@innovaccer/design-system";
 // import './index.css';
+import { $createParagraphNode } from "lexical";
+import { ParagraphNode } from "lexical";
+import { CustomParagraphNode } from "./nodes/CustomParagraphNode";
+import { CustomLinkNode, $createLinkNode } from "./nodes/CustomLinkNode";
 
 function Placeholder() {
   return <div className="editor-placeholder">Enter some rich text...</div>;
+}
+
+function $createMyNode(nodes: any) {
+  // const root = $getRoot();
+  console.log("nodes in custom renderer-> ", nodes);
+  const paragraphNode = $createParagraphNode();
+  nodes.forEach((n: any) => paragraphNode.append(n));
+
+  return paragraphNode;
+  // paragraphNode.append(nodes);
+  // root.append(paragraphNode);
+  // console.log('props in createMyNode ', props);
+  // const paragraphNode = $createParagraphNode();
+  // paragraphNode.append('hello world');
+
+  // return new paragraphNode('my-paragraph-2')
+  // return <p>hello apply mention</p>
+}
+
+export function $createCustomParagraphNode(linkNode: any): any {
+  console.log('linkNode attr-> ', linkNode);
+  // return new CustomParagraphNode(linkNode.__url, linkNode.__target, linkNode.__rel, linkNode.getURL,{...});
+  // return new CustomParagraphNode({...linkNode})
+  return <p>custom link</p>;
 }
 
 const editorConfig = {
@@ -66,8 +94,69 @@ const editorConfig = {
     LinkNode,
     MentionNode,
     ImageNode,
+    ParagraphNode,
+    CustomParagraphNode,
+    CustomLinkNode,
+    // {
+    //   replace: MentionNode,
+    //   with: (node: MentionNode) => {
+    //     return new CustomMentionNode(node.__mention, node.__text, node.__key);
+    //   }
+    // },
+    // {
+    //   replace: ParagraphNode,
+    //   with: (node: ParagraphNode) => {
+    //     // return new CustomParagraphNode('mycustomprop');
+    //     return new CustomParagraphNode();
+    //   }
+    // },
+    // {
+    //   replace: LinkNode,
+    //   with: (node: LinkNode) => {
+    //     return new CustomParagraphNode();
+    //   }
+    // }
+    // {
+    //   replace: MentionNode,
+    //   with(node: any) {
+    //     console.log('inside withhhhhhhhhhhhhhhhh ')
+    //     return $createMyNode(node);
+    //   },
+    // },
+    // {
+    //   replace: LinkNode,
+    //   with: (linkNode: LinkNode) => {
+    //     // return $createLinkNode(linkNode.__url, linkNode.__url);
+    //     return new CustomLinkNode(linkNode.__url, linkNode.__url)
+    //   }
+    // }
   ],
+  // proxies: [
+  //   [
+  //     LinkNode,
+  //     (linkNode: LinkNode) => {
+  //       console.log("linkNodeee->>", linkNode);
+  //       const node = $createLinkNode(linkNode.__url, linkNode.__url);
+  //       return node;
+  //     },
+  //   ],
+  // ],
 };
+
+{
+  /* <MLCComposer initialConfig={
+  nodes: [TextNode, ACTextNode],
+  proxies: [
+    [TextNode, (textNode: TextNode) => {
+        const node = $createACTextNode(textNode.__text);
+        node.setFormat(textNode.format);
+        node.setDetail(textNode.detail);
+        node.setMode(textNode.mode);
+        node.setStyle(textNode.style);
+        return node;
+      }]
+  ]}> */
+}
 
 // When the editor changes, you can get notified via the
 // LexicalOnChangePlugin!
@@ -92,7 +181,9 @@ export default function Editor() {
             <ToolbarPlugin />
             <div className="editor-inner" id="main-container">
               <RichTextPlugin
-                contentEditable={<ContentEditable className="editor-input ContentEditable__root" />}
+                contentEditable={
+                  <ContentEditable className="editor-input ContentEditable__root" />
+                }
                 placeholder={<Placeholder />}
                 ErrorBoundary={LexicalErrorBoundary}
               />
